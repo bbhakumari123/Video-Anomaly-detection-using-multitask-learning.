@@ -56,14 +56,14 @@ import zipfile
 import os
 import shutil
 
-# 🔓 Unzip your dataset (replace with your actual filename)
-zip_path = '/content/drive/MyDrive/archive (2).zip'  # CHANGE if needed
+# Unzip your dataset (replace with your actual filename)
+zip_path = '/content/drive/MyDrive/archive (2).zip' 
 extract_to = '/content/UCF-Crime-Dataset'
 
 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
     zip_ref.extractall(extract_to)
 
-print("✅ Dataset unzipped.")
+print(" Dataset unzipped.")
 
 source_train = '/content/UCF-Crime-Dataset/Train'
 source_test = '/content/UCF-Crime-Dataset/Test'
@@ -83,14 +83,14 @@ def copy_selected(source_folder, target_folder, folders):
         tgt = os.path.join(target_folder, folder)
         if os.path.exists(src):
             shutil.copytree(src, tgt, dirs_exist_ok=True)
-            print(f"✅ Copied: {folder}")
+            print(f" Copied: {folder}")
         else:
-            print(f"⚠️ Not found: {folder}")
+            print(f" Not found: {folder}")
 
 copy_selected(source_train, target_train, folders_to_copy)
 copy_selected(source_test, target_test, folders_to_copy)
 
-print("✅ Selected classes copied to /content/UCF-Crime-Selected/")
+print(" Selected classes copied to /content/UCF-Crime-Selected/")
 
 import pandas as pd
 
@@ -129,7 +129,7 @@ def detect_objects_and_save(frame_folder, output_csv):
     # Save detections into CSV
     df = pd.DataFrame(data)
     df.to_csv(output_csv, index=False)
-    print(f"✅ Object detections saved to {output_csv}")
+    print(f" Object detections saved to {output_csv}")
 
 detect_objects_and_save('/content/UCF-Crime-Frames-112', '/content/detections.csv')
 
@@ -215,7 +215,7 @@ def generate_anomaly_labels(detections_csv_path, sequence_length=5):
         anomaly_labels.append(labels)
         sequence_paths.append(current_sequence)
 
-    print(f"✅ Generated {len(anomaly_labels)} anomaly label rows.")
+    print(f"Generated {len(anomaly_labels)} anomaly label rows.")
     return sequence_paths, anomaly_labels
 
 # 🔄 Save to Drive
@@ -237,7 +237,7 @@ def save_labels_to_drive(sequence_paths, anomaly_labels, save_path):
 
     df = pd.DataFrame(records)
     df.to_csv(save_path, index=False)
-    print(f"✅ Saved anomaly_labels.csv to: {save_path}")
+    print(f" Saved anomaly_labels.csv to: {save_path}")
 
 #  Run both steps
 sequence_paths, anomaly_labels = generate_anomaly_labels('/content/detections_anomaly.csv', sequence_length=5)
@@ -359,7 +359,7 @@ def evaluate_model(model, loader, device):
         for x, y in loader:
             x = x.to(device)
             preds, _ = model(x)
-            # Ensure tensors are on CPU before converting to numpy
+            
             y_true.append(y.detach().cpu().tolist())
             y_pred.append((preds.detach().cpu() > 0.5).int().tolist())
 
@@ -421,13 +421,13 @@ def main():
         try:
             model.load_state_dict(torch.load(MODEL_SAVE_PATH, map_location=device))
             model.eval()
-            print("✅ Model loaded successfully")
+            print(" Model loaded successfully")
 
             # Evaluate existing model
             print("\nEvaluating loaded model...")
             evaluate_model(model, test_loader, device)
         except Exception as e:
-            print(f"❌ Error loading model: {e}")
+            print(f" Error loading model: {e}")
             print("Training new model instead...")
             train_model(model, train_loader, device, epochs=10)
             evaluate_model(model, test_loader, device)
@@ -446,44 +446,44 @@ import cv2
 import os
 from google.colab.patches import cv2_imshow
 
-# ✅ Load CSV with 6 anomaly types
+# Load CSV with 6 anomaly types
 csv_path = '/content/detection_anomalylabels.csv'  
 df = pd.read_csv(csv_path)
 
-# ✅ Define anomaly type labels
+#  Define anomaly type labels
 anomaly_types = ['crowd', 'motion', 'object_count', 'scene_context', 'collision']
 
 for idx, row in df.iterrows():
     frame_path = row['start_frame']
     if not os.path.exists(frame_path):
-        print(f"⚠️ Missing frame: {frame_path}")
+        print(f" Missing frame: {frame_path}")
         continue
 
     frame = cv2.imread(frame_path)
     if frame is None:
-        print(f"⚠️ Unable to read: {frame_path}")
+        print(f" Unable to read: {frame_path}")
         continue
 
-    # ✅ Detect anomaly type(s)
+    # Detect anomaly type(s)
     detected_anomalies = [atype for atype in anomaly_types if row[atype] == 1]
     is_anomaly = len(detected_anomalies) > 0
 
-    # ✅ Color: Red = anomaly, Green = normal
+    #  Color: Red = anomaly, Green = normal
     color = (0, 0, 255) if is_anomaly else (0, 255, 0)  # BGR
 
-    # ✅ Draw only a rectangle (no label inside)
+    #  Draw only a rectangle 
     height, width = frame.shape[:2]
     cv2.rectangle(frame, (10, 10), (width - 10, height - 10), color, 2)
 
-    # ✅ Show the frame
+    #  Show the frame
     cv2_imshow(frame)
     cv2.waitKey(1)
 
-    # ✅ Print the anomalies outside the image
+    # Print the anomalies outside the image
     print(f" Frame: {frame_path}")
     if is_anomaly:
         print(f"Detected Anomalies: {', '.join(detected_anomalies)}")
     else:
         print(" Normal Behavior")
 
-print("✅ All frames processed.")
+print(" All frames processed.")
