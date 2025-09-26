@@ -7,14 +7,14 @@ Original file is located at
     https://colab.research.google.com/drive/11GCSBJN_S5Qxs1L_3cu4MvGSedGdn0gh
 """
 
-# ✅ Install YOLOv8 and dependencies
+
 !pip install ultralytics --quiet
 !pip install opencv-python-headless --quiet
 
-# First uninstall existing packages
+
 !pip uninstall torch torchvision torchaudio -y
 
-# Then install the specific versions that work together
+
 !pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 --index-url https://download.pytorch.org/whl/cu118
 
 import torch
@@ -35,7 +35,7 @@ pip install --upgrade opencv-python
 
 # Initialize YOLO model
 from ultralytics import YOLO
-model = YOLO('yolov8n.pt')  # Add this line
+model = YOLO('yolov8n.pt') 
 
 import torch
 import cv2
@@ -131,7 +131,6 @@ def detect_objects_and_save(frame_folder, output_csv):
     df.to_csv(output_csv, index=False)
     print(f"✅ Object detections saved to {output_csv}")
 
-# Run it
 detect_objects_and_save('/content/UCF-Crime-Frames-112', '/content/detections.csv')
 
 import pandas as pd
@@ -448,7 +447,7 @@ import os
 from google.colab.patches import cv2_imshow
 
 # ✅ Load CSV with 6 anomaly types
-csv_path = '/content/detection_anomalylabels.csv'  # Update if needed
+csv_path = '/content/detection_anomalylabels.csv'  
 df = pd.read_csv(csv_path)
 
 # ✅ Define anomaly type labels
