@@ -239,7 +239,7 @@ def save_labels_to_drive(sequence_paths, anomaly_labels, save_path):
     df.to_csv(save_path, index=False)
     print(f" Saved anomaly_labels.csv to: {save_path}")
 
-#  Run both steps
+
 sequence_paths, anomaly_labels = generate_anomaly_labels('/content/detections_anomaly.csv', sequence_length=5)
 save_labels_to_drive(sequence_paths, anomaly_labels, '/content/drive/MyDrive/detection_anomaly_labels.csv')
 
